@@ -1,0 +1,53 @@
+<!--Heredamos desde base.html-->
+{% extends 'base.html' %}
+
+<!-- Agregamos un bloque de contenido-->
+ {% block content %}
+ <section class="container-fluid">
+    <nav class="navbar">
+         <h1>{% block title %}Lista-Tareas{% endblock%}</h1>
+         <a href="{{ url_for('todo.create')}}" class="btn btn-success">Nuevo</a>
+    </nav>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="col">Tareas</th>
+                <th class="col">Estado</th>
+                <th class="col" colspan="2">Opciones</th>
+            </tr>         
+        </thead>
+        <tbody>
+            {% for todo in todos | reverse %}
+            <!-- Condicional para mostrar solo las tareas que le pertenecen al usuario-->
+            {% if g.user.id == todo.created_by %}
+            <tr>
+                <td>
+                    <h5>{{todo.tittle}}</h5>
+                    <p>{{todo.desc}}</p>
+                </td>
+                <td>
+                    {% if todo.state==False %}
+                    <samp class="text-warning">Incompleto</samp>
+                    {% else %}
+                    <span class="text-success">Completado</span>
+                    {% endif %}
+                </td>
+
+                <!-- BOTON EDITAR-->
+                <td>
+                    <a href="{{ url_for('todo.update', id=todo.id )}}" class="btn btn-info btn-sm">Editar</a>
+                </td>
+
+                <!-- BOTON ELIMINAR-->
+                <td>
+                    <a href="{{ url_for('todo.delete', id=todo.id )}}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+ </section>
+
+ {% endblock %}
